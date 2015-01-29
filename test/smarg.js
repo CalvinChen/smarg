@@ -4,7 +4,50 @@
 var Smarg = require('../lib/smarg');
 var $ = Smarg.$;
 var expect = require('chai').expect;
+function cb() {}
 describe('smarge', function() {
+    describe('#requireCb', function () {
+        function requireCb1param(cb) {
+            var smarg = $().requireCb();
+            cb = smarg.cb;
+            return {
+                argus: arguments,
+                cb: cb
+            };
+        }
+        function requireCb3param(param0, param1, cb) {
+            var smarg = $(arguments).requireCb();
+            cb = smarg.cb;
+            return {
+                argus: arguments,
+                param1: param0,
+                param2: param1,
+                cb: cb
+            };
+        }
+        it('should work fine when passing cb', function (done) {
+            var re = requireCb1param(cb);
+            expect(re.argus.length).to.equal(1);
+            expect(re.argus[0]).to.equal(cb);
+            expect(re.cb).to.equal(cb);
+
+            re = requireCb3param(cb);
+            expect(re.argus.length).to.equal(1);
+            expect(re.argus[0]).to.be.undefined();
+            expect(re.argus[1]).to.be.undefined();
+            expect(re.argus[2]).to.equal(cb);
+            expect(re.cb).to.equal(cb);
+            done();
+        });
+        it('should throw error when not passing cb', function (done) {
+            try {
+                requireCb1param();
+            } catch (e) {
+                expect(e).is.not.null();
+                done();
+            }
+        });
+    });
     describe('#hasCb', function() {
         function funWith2argus(argu1, cb) {
             $(arguments).hasCb();
@@ -14,7 +57,6 @@ describe('smarge', function() {
             $(arguments).hasCb();
             return arguments;
         }
-        function cb() {}
         it('should change the arguments which has only one callback', function() {
             var argus = funWith2argus();
             expect(argus.length).to.equal(0);

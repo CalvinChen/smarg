@@ -3,5 +3,8 @@
   "version": "0.0.1",
   "devDependencies": {
     "chai": "^1.10.0"
+  },
+  "dependencies": {
+    "string": "^3.0.0"
   }
 }
